@@ -18,8 +18,7 @@ Fine-tuning the library models for token classification.
 """
 # You can also adapt this script on your own token classification task and datasets. Pointers for this are left as
 # comments.
-from datasets import Dataset
-import pandas as pd
+
 import logging
 import os
 import sys
@@ -284,17 +283,14 @@ def main():
     #
     # In distributed training, the load_dataset function guarantee that only one local process can concurrently
     # download the dataset.
-    def load_datasets(dataset_name):
-        df = pd.read_csv(dataset_name+'/test.csv')
-        test_dataset = Dataset.from_pandas(df)
-        df = pd.read_csv(dataset_name+'/train.csv')
-        train_dataset = Dataset.from_pandas(df)
-        data_dict={"train":train_dataset,"test":test_dataset}
-        return data_dict
     if data_args.dataset_name is not None:
         # Downloading and loading a dataset from the hub.
-        raw_datasets = load_datasets(
+        raw_datasets = load_dataset(
             data_args.dataset_name,
+            data_args.dataset_config_name,
+            cache_dir=model_args.cache_dir,
+            token=model_args.token,
+            trust_remote_code=model_args.trust_remote_code,
         )
     else:
         data_files = {}
@@ -341,9 +337,10 @@ def main():
         label_list = list(unique_labels)
         label_list.sort()
         return label_list
-    labels_are_int=0
+
     # If the labels are of type ClassLabel, they are already integers and we have the map stored somewhere.
     # Otherwise, we have to get the list of labels manually.
+    labels_are_int = isinstance(features[label_column_name].feature, ClassLabel)
     if labels_are_int:
         label_list = features[label_column_name].feature.names
         label_to_id = {i: i for i in range(len(label_list))}
@@ -432,11 +429,11 @@ def main():
     # Map that sends B-Xxx label to its I-Xxx counterpart
     b_to_i_label = []
     for idx, label in enumerate(label_list):
-        if label.startswith("B-") and label.replace("B-", "I-") in label_list:
+        if isinstance(label, str) and label.startswith("B-") and label.replace("B-", "I-") in label_list:
             b_to_i_label.append(label_list.index(label.replace("B-", "I-")))
         else:
             b_to_i_label.append(idx)
-
+        
     # Preprocessing the dataset
     # Padding strategy
     padding = "max_length" if data_args.pad_to_max_length else False
