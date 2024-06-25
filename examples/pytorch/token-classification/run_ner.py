@@ -341,7 +341,7 @@ def main():
         label_list = list(unique_labels)
         label_list.sort()
         return label_list
-
+    labels_are_int=0
     # If the labels are of type ClassLabel, they are already integers and we have the map stored somewhere.
     # Otherwise, we have to get the list of labels manually.
     if labels_are_int:
