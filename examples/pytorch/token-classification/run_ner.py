@@ -46,7 +46,7 @@ from transformers import (
 from transformers.trainer_utils import get_last_checkpoint
 from transformers.utils import check_min_version, send_example_telemetry
 from transformers.utils.versions import require_version
-from transformers import BertTokenizer, BertConfig, BertForTokenClassification
+from transformers import BertTokenizerFast, BertConfig, BertForTokenClassification
 
 # Will error if the minimal version of Transformers is not installed. Remove at your own risks.
 check_min_version("4.42.0.dev0")
@@ -378,7 +378,7 @@ def main():
             add_prefix_space=True,
         )
     else:
-        tokenizer = BertTokenizer.from_pretrained(
+        tokenizer = BertTokenizerFast.from_pretrained(
             tokenizer_name_or_path,
             cache_dir=model_args.cache_dir,
             use_fast=True,
