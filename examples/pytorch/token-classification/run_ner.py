@@ -29,7 +29,7 @@ import datasets
 import evaluate
 import numpy as np
 from datasets import ClassLabel, load_dataset
-from transformers import BertConfig
+
 import transformers
 from transformers import (
     AutoConfig,
@@ -41,7 +41,7 @@ from transformers import (
     PreTrainedTokenizerFast,
     Trainer,
     TrainingArguments,
-    set_seed,
+    set_seed,BertConfig
 )
 from transformers.trainer_utils import get_last_checkpoint
 from transformers.utils import check_min_version, send_example_telemetry
