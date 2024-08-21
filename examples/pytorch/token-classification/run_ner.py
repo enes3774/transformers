@@ -29,7 +29,7 @@ import datasets
 import evaluate
 import numpy as np
 from datasets import ClassLabel, load_dataset
-
+from transformers import BertConfig
 import transformers
 from transformers import (
     AutoConfig,
@@ -355,7 +355,8 @@ def main():
     # Distributed training:
     # The .from_pretrained methods guarantee that only one local process can concurrently
     # download model & vocab.
-    config = AutoConfig.from_pretrained(
+    
+    config = BertConfig.from_pretrained(
         model_args.config_name if model_args.config_name else model_args.model_name_or_path,
         num_labels=num_labels,
         finetuning_task=data_args.task_name,
