@@ -566,6 +566,17 @@ def main():
         data_collator=data_collator,
         compute_metrics=compute_metrics,
     )
+    def make_contiguous(model):
+        for name, param in model.named_parameters():
+            if not param.is_contiguous():
+                param.data = param.data.contiguous()
+
+    
+    def save_model_custom(trainer, output_dir):
+        make_contiguous(trainer.model)
+        trainer.model.save_pretrained(output_dir)
+
+    trainer.save_model = lambda output_dir: save_model_custom(trainer, output_dir)
 
     # Training
     if training_args.do_train:
