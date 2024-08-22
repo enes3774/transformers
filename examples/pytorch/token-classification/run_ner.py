@@ -397,7 +397,7 @@ def main():
         trust_remote_code=model_args.trust_remote_code,
         ignore_mismatched_sizes=model_args.ignore_mismatched_sizes,
     )
-
+    for param in model.parameters(): param.data = param.data.contiguous()
     
 
     # Model has labels -> use them.
@@ -576,7 +576,7 @@ def main():
         make_contiguous(trainer.model)
         trainer.model.save_pretrained(output_dir)
 
-    trainer.save_model = lambda output_dir: save_model_custom(trainer, output_dir)
+    #trainer.save_model = lambda output_dir: save_model_custom(trainer, output_dir)
 
     # Training
     if training_args.do_train:
