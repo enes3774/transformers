@@ -422,12 +422,23 @@ def main():
     model.config.id2label = dict(enumerate(label_list))
 
     # Map that sends B-Xxx label to its I-Xxx counterpart
+    b_to_i_mapping = {
+        0: 6,  
+        1: 7 ,  
+        2: 8,  
+        3: 9  ,
+        4: 10,  
+        5: 11  
+        
+    }
+    
     b_to_i_label = []
     for idx, label in enumerate(label_list):
-        if isinstance(label, str) and label.startswith("B-") and label.replace("B-", "I-") in label_list:
-            b_to_i_label.append(label_list.index(label.replace("B-", "I-")))
+        # Check if the label has a corresponding "I-" equivalent in the mapping
+        if label in b_to_i_mapping:
+            b_to_i_label.append(b_to_i_mapping[label])
         else:
-            b_to_i_label.append(idx)
+            b_to_i_label.append(label)
         
     # Preprocessing the dataset
     # Padding strategy
